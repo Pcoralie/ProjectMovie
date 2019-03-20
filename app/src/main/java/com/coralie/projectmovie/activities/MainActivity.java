@@ -4,6 +4,9 @@ package com.coralie.projectmovie.activities;
     // Glide docs :
 // https://bumptech.github.io/glide/doc/getting-started.html
 
+import android.content.Intent;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +16,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.util.Log;
-import android.widget.EditText;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.coralie.projectmovie.R;
 import com.coralie.projectmovie.adapters.MovieAdapter;
@@ -36,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String API_KEY = "2a8952e8371fa67a96f6093ccdbe138a";
 
     private RecyclerView recyclerView;
-    private RecyclerView gridView;
-    private EditText editText;
     private MovieService service;
 
     private MovieAdapter adapter;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         service = retrofit.create(MovieService.class);
 
         initialize();
-        launchSearch();
+        launchPopularMovies();
 
 
     }
@@ -77,16 +79,14 @@ public class MainActivity extends AppCompatActivity {
         movieList = new ArrayList<>();
         adapter = new MovieAdapter(this, movieList);
 
-        //if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        //{
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
-    private void launchSearch() {
+    private void launchPopularMovies() {
 
         Call<MovieResponse> call = service.getPopularMovies(API_KEY);
         call.enqueue(new Callback<MovieResponse>(){
@@ -99,9 +99,7 @@ public class MainActivity extends AppCompatActivity {
                         List<Movie> movies = response.body().getResults();
                         recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), movies));
                         recyclerView.smoothScrollToPosition(0);
-
                     }
-
                 }
 
                 @Override
@@ -112,6 +110,71 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    private void launchTopRatedMovies() {
+
+        Call<MovieResponse> call = service.getTopRatedMovies(API_KEY);
+        call.enqueue(new Callback<MovieResponse>(){
+            @Override
+            public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse");
+
+                    List<Movie> movies = response.body().getResults();
+                    recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), movies));
+                    recyclerView.smoothScrollToPosition(0);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure", t);
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menu_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+
 
     }
+
+ class SettingsActivity extends PreferenceActivity {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+    }
+
+    public static class SettingsFragment extends PreferenceFragment{
+        @Override
+        public void onCreate(final Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences);
+        }
+    }
+}
+
+
 

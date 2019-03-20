@@ -9,13 +9,14 @@ import retrofit2.http.GET;
 
 import com.coralie.projectmovie.models.Movie;
 import com.coralie.projectmovie.models.MovieResponse;
+import com.coralie.projectmovie.models.VideoResponse;
 
 public interface MovieService {
         String API_KEY = "2a8952e8371fa67a96f6093ccdbe138a";
 
 
 
-        //MOVIE SEARCH AUTOCOMPLETE
+        //MOVIE SEARCH
         @GET("/search/movie")
         //void search(@Query("api_key") String apiKey, @Query("query") String query, Callback<MovieResponse> callback);
         Call<MovieResponse> search(@Query("api_key") String apiKey, @Query("query") String query);
@@ -36,6 +37,10 @@ public interface MovieService {
 
         @GET("movie/top_rated")
         Call<MovieResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+
+        @GET("movie/{movie_id}/videos")
+        Call<VideoResponse> getMovieVideo(@Path("movie_id") int id, @Query("api_key") String apiKey);
+
 
 }
 /*

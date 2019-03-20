@@ -56,7 +56,6 @@ public class Movie {
         this.voteAverage = voteAverage;
     }
 
-    String baseImageUrl ="https://image.tmdb.org/t/p/w500";
 
     public Movie(){
 

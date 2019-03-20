@@ -24,10 +24,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     public Context myContext;
     private final List<Movie> movieList;
 
-    public MovieAdapter(List<Movie> movieList){
-        this.movieList = movieList;
-    }
-
     public MovieAdapter(Context myContext , List<Movie> movieList) {
         this.myContext = myContext;
         this.movieList = movieList;
@@ -43,10 +39,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        //viewHolder.bind(movieList.get(position));
         viewHolder.title.setText(movieList.get(position).getOriginalTitle());
         String vote = Double.toString(movieList.get(position).getVoteAverage());
         viewHolder.userrating.setText(vote);
+
+
 
         Glide.with(myContext)
                 .load(movieList.get(position).getPosterPath())
@@ -73,7 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v){
                     int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         Movie clickedDataItem = movieList.get(pos);
