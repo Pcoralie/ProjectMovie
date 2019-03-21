@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coralie.projectmovie.activities.DetailActivity;
 import com.coralie.projectmovie.R;
+import com.coralie.projectmovie.api.GlideApp;
 import com.coralie.projectmovie.models.Movie;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     @NonNull
     @Override
     public MovieAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.content_detail, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_view, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -43,11 +44,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         String vote = Double.toString(movieList.get(position).getVoteAverage());
         viewHolder.userrating.setText(vote);
 
-
-
-        Glide.with(myContext)
+        GlideApp.with(myContext)
                 .load(movieList.get(position).getPosterPath())
                 .into(viewHolder.thumbnail);
+
+        /*
+        Glide.with(myContext)
+                .load(movieList.get(position).getPosterPath())
+                .into(viewHolder.thumbnail);*/
     }
 
     @Override

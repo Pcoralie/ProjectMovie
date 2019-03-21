@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -39,25 +40,22 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String API_KEY = "2a8952e8371fa67a96f6093ccdbe138a";
 
+
+    private AppCompatActivity activity = MainActivity.this;
+
     private RecyclerView recyclerView;
     private MovieService service;
+    private ConstraintLayout constraintLayout;
 
     private MovieAdapter adapter;
     private List<Movie> movieList;
 
-    public static final String LOG_TAG = MovieAdapter.class.getName();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
-
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/3/")
@@ -66,16 +64,20 @@ public class MainActivity extends AppCompatActivity {
 
         service = retrofit.create(MovieService.class);
 
+
         initialize();
+
+
+        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         launchPopularMovies();
-
-
     }
 
     private void initialize(){
         System.out.println("Fetching movies...");
 
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recycler_view);
         movieList = new ArrayList<>();
         adapter = new MovieAdapter(this, movieList);
 
@@ -84,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        constraintLayout = findViewById(R.id.main_content);
     }
 
     private void launchPopularMovies() {
@@ -158,23 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
- class SettingsActivity extends PreferenceActivity {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
-    }
-
-    public static class SettingsFragment extends PreferenceFragment{
-        @Override
-        public void onCreate(final Bundle savedInstanceState){
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
-        }
-    }
-}
 
 
 

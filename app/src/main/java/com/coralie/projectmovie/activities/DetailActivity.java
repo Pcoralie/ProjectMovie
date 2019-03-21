@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coralie.projectmovie.R;
 import com.coralie.projectmovie.adapters.VideoAdapter;
+import com.coralie.projectmovie.api.GlideApp;
 import com.coralie.projectmovie.api.MovieService;
 import com.coralie.projectmovie.models.Movie;
 import com.coralie.projectmovie.models.Video;
@@ -47,6 +48,8 @@ public class DetailActivity extends AppCompatActivity {
     private VideoAdapter adapter;
     private List<Video> videoList;
 
+    private final AppCompatActivity activity = DetailActivity.this;
+
     Movie movie;
     String thumbnail;
     String movieName;
@@ -60,7 +63,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -84,7 +87,7 @@ public class DetailActivity extends AppCompatActivity {
             movie_id = movie.getId();
 
 
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(thumbnail)
                     .into(imageView);
 

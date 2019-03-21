@@ -61,13 +61,7 @@ public class Movie {
 
     }
 
-    public static final Comparator<Movie> BY_NAME_ALPHABETICAL = new Comparator<Movie>() {
-        @Override
-        public int compare(Movie movie, Movie t1) {
 
-            return movie.originalTitle.compareTo(t1.originalTitle);
-        }
-    };
 
     public String getPosterPath() {
         return  "https://image.tmdb.org/t/p/w500" + posterPath;
