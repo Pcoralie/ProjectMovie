@@ -37,15 +37,16 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final VideoAdapter.ViewHolder viewHolder, int i){
-        viewHolder.title.setText(videoList.get(i).getName());
+    public void onBindViewHolder(final VideoAdapter.ViewHolder viewHolder, int position){
+        viewHolder.title.setText(videoList.get(position).getName());
 
     }
 
     @Override
     public int getItemCount(){
 
-        return videoList.size();
+        //return videoList.size();
+        return videoList != null ? videoList.size() : 0;
 
     }
 
@@ -55,8 +56,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
         public ViewHolder(View view){
             super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+            title =  view.findViewById(R.id.title);
+            thumbnail =  view.findViewById(R.id.thumbnail);
 
             view.setOnClickListener(new View.OnClickListener(){
                 @Override

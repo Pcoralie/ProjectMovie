@@ -18,7 +18,6 @@ public interface MovieService {
 
         //MOVIE SEARCH
         @GET("/search/movie")
-        //void search(@Query("api_key") String apiKey, @Query("query") String query, Callback<MovieResponse> callback);
         Call<MovieResponse> search(@Query("api_key") String apiKey, @Query("query") String query);
 
 

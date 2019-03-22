@@ -9,9 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.coralie.projectmovie.activities.DetailActivity;
 import com.coralie.projectmovie.R;
 import com.coralie.projectmovie.api.GlideApp;
@@ -86,7 +83,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
                         intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         myContext.startActivity(intent);
-                        Toast.makeText(v.getContext(), "You Clicked" + clickedDataItem.getOriginalTitle(), Toast.LENGTH_SHORT).show();
 
 
                     }

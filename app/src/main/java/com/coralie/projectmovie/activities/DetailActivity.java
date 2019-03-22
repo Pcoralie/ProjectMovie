@@ -1,7 +1,10 @@
 package com.coralie.projectmovie.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +37,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String API_KEY = "2a8952e8371fa67a96f6093ccdbe138a";
+    private static final String TAG = "DetailActivity";
+
 
     private MovieService service;
 
@@ -58,6 +63,7 @@ public class DetailActivity extends AppCompatActivity {
     String dateOfRelease;
     int movie_id;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,8 +82,10 @@ public class DetailActivity extends AppCompatActivity {
         userRating =  findViewById(R.id.userrating);
         releaseDate =  findViewById(R.id.releasedate);
 
-        Intent intentThatStartedThisActivity = getIntent();
-        if (intentThatStartedThisActivity.hasExtra("movies")) {
+        Intent intent = getIntent();
+        if (intent.hasExtra("movies")) {
+
+            movie = getIntent().getParcelableExtra("movies");
 
             thumbnail = movie.getPosterPath();
             movieName = movie.getOriginalTitle();
@@ -95,6 +103,8 @@ public class DetailActivity extends AppCompatActivity {
             plotSynopsis.setText(synopsis);
             userRating.setText(rating);
             releaseDate.setText(dateOfRelease);
+
+
         }
 
         initializeView();
@@ -102,10 +112,9 @@ public class DetailActivity extends AppCompatActivity {
 
 
         private void initCollapsingToolbar(){
-            final CollapsingToolbarLayout collapsingToolbarLayout =
-                    (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+            final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
             collapsingToolbarLayout.setTitle("");
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+            AppBarLayout appBarLayout =  findViewById(R.id.appbar);
             appBarLayout.setExpanded(true);
 
             appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -157,9 +166,12 @@ public class DetailActivity extends AppCompatActivity {
             call.enqueue(new Callback<VideoResponse>() {
                 @Override
                 public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
-                    List<Video> video = response.body().getResults();
-                    recyclerView.setAdapter(new VideoAdapter(getApplicationContext(), video));
-                    recyclerView.smoothScrollToPosition(0);
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "onResponse");
+                        List<Video> video = response.body().getResults();
+                        recyclerView.setAdapter(new VideoAdapter(getApplicationContext(), video));
+                        recyclerView.smoothScrollToPosition(0);
+                    }
                 }
 
                 @Override
