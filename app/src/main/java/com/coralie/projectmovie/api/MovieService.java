@@ -1,15 +1,12 @@
 package com.coralie.projectmovie.api;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.GET;
 
 
-import com.coralie.projectmovie.models.Movie;
 import com.coralie.projectmovie.models.MovieResponse;
-import com.coralie.projectmovie.models.VideoResponse;
 
 public interface MovieService {
         String API_KEY = "2a8952e8371fa67a96f6093ccdbe138a";
@@ -17,19 +14,8 @@ public interface MovieService {
 
 
         //MOVIE SEARCH
-        @GET("/search/movie")
-        Call<MovieResponse> search(@Query("api_key") String apiKey, @Query("query") String query);
-
-
-        //MOVIE DETAIL
-        @GET("/movie/{id}")
-        void movieDetails(@Query("api_key") String apiKey, @Path("id") int movieID, Callback<Movie> callback);
-
-        //MOVIE IMAGES
-        @GET("/movie/{id}/images")
-        void movieImages(@Query("api_key") String apiKey, @Path("id") int movieID, Callback<Movie> callback);
-
-
+        @GET("search/movie")
+        Call<MovieResponse> getSearch(@Query("api_key") String apiKey, @Query("query") String query);
 
         @GET("movie/popular")
         Call<MovieResponse> getPopularMovies(@Query("api_key") String apiKey);
@@ -37,8 +23,6 @@ public interface MovieService {
         @GET("movie/top_rated")
         Call<MovieResponse> getTopRatedMovies(@Query("api_key") String apiKey);
 
-        @GET("movie/{movie_id}/videos")
-        Call<VideoResponse> getMovieVideo(@Path("movie_id") int id, @Query("api_key") String apiKey);
 
 
 }

@@ -2,17 +2,16 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:adjustViewBounds="true"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    android:adjustViewBounds="true">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:id="@+id/movie_view"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:elevation="3dp"
-        card_view:cardCornerRadius="0dp">
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,7 +20,7 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="wrap_content"
             android:id="@+id/thumbnail"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"/>
@@ -34,7 +33,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
-            android:textColor="@color/movie_title"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="15dp"/>
 
         <TextView
@@ -50,6 +49,6 @@
             android:layout_below="@+id/title"/>
 
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

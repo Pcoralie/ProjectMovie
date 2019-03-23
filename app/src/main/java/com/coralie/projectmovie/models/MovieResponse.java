@@ -56,5 +56,17 @@ public class MovieResponse {
     }
 
 
+    public Movie getMovie(int movie_id) {
+
+        for (Movie i : results) {
+            if (i.getId().equals(movie_id)) {
+                return i;
+            }
+
+
+        }
+        return null ;
+    }
+
 
 }

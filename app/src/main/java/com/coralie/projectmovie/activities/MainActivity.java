@@ -1,19 +1,14 @@
 package com.coralie.projectmovie.activities;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.ContextWrapper;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -22,6 +17,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.coralie.projectmovie.R;
@@ -45,17 +41,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String API_KEY = "2a8952e8371fa67a96f6093ccdbe138a";
 
 
-    private AppCompatActivity activity = MainActivity.this;
     public static final String LOG_TAG = MovieAdapter.class.getName();
 
 
     private EditText editText;
-
     private RecyclerView recyclerView;
     private MovieService service;
     private ConstraintLayout constraintLayout;
-
-
     private MovieAdapter adapter;
     private List<Movie> movieList;
 
@@ -65,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         editText = findViewById(R.id.editText);
-
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -77,130 +68,93 @@ public class MainActivity extends AppCompatActivity {
 
         service = retrofit.create(MovieService.class);
 
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= 0) {
-                    launchSearch(s.toString());
-                } else {
-                    launchSearch("");
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-
         initialize();
 
     }
 
-    public Activity getActivity() {
-        Context context = this;
-        while (context instanceof ContextWrapper) {
-            if (context instanceof Activity) {
-                return (Activity) context;
-            }
-            context = ((ContextWrapper) context).getBaseContext();
-        }
-        return null;
 
-    }
 
     private void initialize() {
-        System.out.println("Fetching movies...");
+        System.out.println("Initialize...");
+
+        checkMenu();
 
         recyclerView = findViewById(R.id.recycler_view);
         movieList = new ArrayList<>();
         adapter = new MovieAdapter(this, movieList);
 
-        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        }
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         constraintLayout = findViewById(R.id.main_content);
 
-        checkSortOrder();
 
     }
 
     private void launchSearch(String query) {
-        Call<MovieResponse> call = service.search(query, API_KEY);
+        Call<MovieResponse> call = service.getSearch(API_KEY, query);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
-                Log.d(TAG, "onResponse");
                 if (response.isSuccessful()) {
-                    MovieResponse movieResponse = response.body();
-                    List<Movie> movieList = movieResponse.getMovies();
+                    Log.d(TAG, "onResponse launchSearch");
+                    List<Movie> movieList = response.body().getResults();
                     recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), movieList));
-                    recyclerView.smoothScrollToPosition(0);
+                }
+                else {
+                    Log.e(TAG, response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Log.e(TAG, "onFailure", t);
+                Log.e(TAG, "onFailure launchSearch", t);
             }
         });
     }
 
-    private void launchPopularMovies() {
 
+
+    private void launchPopularMovies() {
         Call<MovieResponse> call = service.getPopularMovies(API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
 
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "onResponse");
+                    Log.d(TAG, "onResponse launchPopularMovie");
 
                     List<Movie> movies = response.body().getResults();
                     recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), movies));
-                    recyclerView.smoothScrollToPosition(0);
                 }
             }
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Log.e(TAG, "onFailure", t);
+                Log.e(TAG, "onFailure launchPopularMovie", t);
             }
         });
     }
 
 
     private void launchTopRatedMovies() {
-
         Call<MovieResponse> call = service.getTopRatedMovies(API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
 
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "onResponse");
+                    Log.d(TAG, "onResponse launchTopRatedMovies");
 
                     List<Movie> movies = response.body().getResults();
                     recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), movies));
-                    recyclerView.smoothScrollToPosition(0);
-
                 }
-
             }
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Log.e(TAG, "onFailure", t);
+                Log.e(TAG, "onFailure launchTopRatedMovies", t);
             }
         });
     }
@@ -224,21 +178,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-    private void checkSortOrder() {
+    private void checkMenu() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String sortOrder = preferences.getString(
-                this.getString(R.string.pref_sort_order_key),
-                this.getString(R.string.pref_most_popular)
+                this.getString(R.string.menu_key),
+                this.getString(R.string.most_popular)
         );
-        if (sortOrder.equals(this.getString(R.string.pref_most_popular))) {
-            Log.d(LOG_TAG, "Sorting by most popular");
+        if (sortOrder.equals(this.getString(R.string.most_popular))) {
+            Log.d(LOG_TAG, "The most popular movies ");
+            editText.setVisibility(View.INVISIBLE);
+
             launchPopularMovies();
-        } else if (sortOrder.equals(this.getString(R.string.pref_highest_rated))) {
-            Log.d(LOG_TAG, "Sorting by vote average");
+        } else if (sortOrder.equals(this.getString(R.string.highest_rated))) {
+            Log.d(LOG_TAG, "The movies with the highest rate");
+            editText.setVisibility(View.INVISIBLE);
+
             launchTopRatedMovies();
 
+        }else {
+            //(sortOrder.equals(this.getString(R.string.search)))
+            Log.d(LOG_TAG, "Searching");
+
+            editText.setVisibility(View.VISIBLE);
+            editText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.length() >= 0) {
+                        launchSearch(s.toString());
+                    } else {
+                        launchSearch("");
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
         }
     }
 
@@ -246,10 +225,10 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         if (movieList.isEmpty()){
-            checkSortOrder();
+            checkMenu();
         }else{
 
-            checkSortOrder();
+            checkMenu();
         }
     }
 }

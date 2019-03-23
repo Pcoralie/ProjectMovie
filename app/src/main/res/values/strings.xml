@@ -6,9 +6,10 @@
     <string name="rating"> User Rating</string>
     <string name="release"> Release Date</string>
     <string name="action_settings">Settings</string>
-    <string name="pref_sort_order_label">Sort Order</string>
-    <string name="pref_sort_order_key">sortOrder</string>
-    <string name="pref_most_popular">Most Popular</string>
-    <string name="pref_highest_rated">Highest Rated</string>
+    <string name="menu_label">Menu</string>
+    <string name="menu_key">Menu</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="highest_rated">Highest Rated</string>
+    <string name="search"> Search</string>
     <string name="trailer">Trailer</string>
 </resources>

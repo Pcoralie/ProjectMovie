@@ -25,7 +25,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     public MovieAdapter(Context myContext , List<Movie> movieList) {
         this.myContext = myContext;
         this.movieList = movieList;
+    }
 
+    public MovieAdapter(List<Movie> movieList){
+        this.movieList = movieList;
     }
 
     @NonNull
@@ -37,6 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+
         viewHolder.title.setText(movieList.get(position).getOriginalTitle());
         String vote = Double.toString(movieList.get(position).getVoteAverage());
         viewHolder.userrating.setText(vote);
@@ -72,9 +76,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
+
                     int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
-                        Movie clickedDataItem = movieList.get(pos);
+                        System.out.println("in viewHolder ");
                         Intent intent = new Intent(myContext, DetailActivity.class);
                         intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
                         intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
@@ -85,6 +90,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
                         myContext.startActivity(intent);
 
 
+                    }
+                    else {
+                        DetailActivity.start(v.getContext(), movieList.get(getLayoutPosition()).getOriginalTitle());
                     }
                 }
 
