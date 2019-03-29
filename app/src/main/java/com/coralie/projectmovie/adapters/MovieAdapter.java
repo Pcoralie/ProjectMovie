@@ -45,8 +45,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         String vote = Double.toString(movieList.get(position).getVoteAverage());
         viewHolder.userrating.setText(vote);
 
+        String poster ;
+
+        if ( movieList.get(position).getPosterPath().contains("https://image.tmdb.org/t/p/w500https://image.tmdb.org/t/p/w500"))
+        {
+            poster = movieList.get(position).getPoster();
+
+        }
+        else {
+            poster = movieList.get(position).getPosterPath();
+        }
+
         GlideApp.with(myContext)
-                .load(movieList.get(position).getPosterPath())
+                .load(poster)
                 .into(viewHolder.thumbnail);
 
         /*
@@ -82,7 +93,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
                         System.out.println("in viewHolder ");
                         Intent intent = new Intent(myContext, DetailActivity.class);
                         intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
-                        intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
+                        if ( movieList.get(pos).getPosterPath().contains("https://image.tmdb.org/t/p/w500https://image.tmdb.org/t/p/w500"))
+                        {
+                            System.out.println("in the if");
+                            intent.putExtra("poster_path", movieList.get(pos).getPoster());
+
+                        }
+                        else {
+                            intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
+
+                        }
                         intent.putExtra("overview", movieList.get(pos).getOverview());
                         intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
                         intent.putExtra("release_date", movieList.get(pos).getReleaseDate());

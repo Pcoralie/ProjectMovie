@@ -18,11 +18,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.coralie.projectmovie.R;
 import com.coralie.projectmovie.adapters.MovieAdapter;
 import com.coralie.projectmovie.api.MovieService;
+import com.coralie.projectmovie.data.ToWatchDb;
 import com.coralie.projectmovie.models.Movie;
 import com.coralie.projectmovie.models.MovieResponse;
 
@@ -50,6 +52,13 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout constraintLayout;
     private MovieAdapter adapter;
     private List<Movie> movieList;
+
+    private AppCompatActivity activity = MainActivity.this;
+
+
+    private ToWatchDb toWatchDb;
+
+
 
 
     @Override
@@ -82,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         movieList = new ArrayList<>();
         adapter = new MovieAdapter(this, movieList);
+        toWatchDb = new ToWatchDb(activity);
+
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -159,6 +171,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void launchListToWatch() {
+        try {
+            List<Movie> movies = toWatchDb.getAllToWatch();
+            recyclerView.setAdapter(new MovieAdapter(getApplicationContext(), movies));
+        } catch (Exception e){
+            Log.d(TAG, "list to watch empty");
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_settings, menu);
@@ -188,18 +209,21 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "The most popular movies ");
             editText.setVisibility(View.INVISIBLE);
 
+
             launchPopularMovies();
         } else if (sortOrder.equals(this.getString(R.string.highest_rated))) {
             Log.d(LOG_TAG, "The movies with the highest rate");
             editText.setVisibility(View.INVISIBLE);
 
+
             launchTopRatedMovies();
 
-        }else {
+        }else if (sortOrder.equals(this.getString(R.string.search))){
             //(sortOrder.equals(this.getString(R.string.search)))
             Log.d(LOG_TAG, "Searching");
 
             editText.setVisibility(View.VISIBLE);
+
             editText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -218,6 +242,13 @@ public class MainActivity extends AppCompatActivity {
                 public void afterTextChanged(Editable s) {
                 }
             });
+        }else {
+            Log.d(LOG_TAG, "The list of movie to watch ");
+            editText.setVisibility(View.INVISIBLE);
+
+
+            launchListToWatch();
+
         }
     }
 

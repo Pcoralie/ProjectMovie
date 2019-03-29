@@ -45,8 +45,9 @@
             android:paddingBottom="5dp"
             android:textColor="@color/colorAccent"
             android:textSize="12dp"
-
             android:layout_below="@+id/title"/>
+
+
 
         </RelativeLayout>
     </LinearLayout>

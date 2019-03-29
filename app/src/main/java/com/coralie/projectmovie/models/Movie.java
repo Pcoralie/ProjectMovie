@@ -69,6 +69,11 @@ public class Movie /*implements Parcelable*/ {
         return "https://image.tmdb.org/t/p/w500" + posterPath;
     }
 
+
+    public String getPoster() {
+        return  posterPath;
+    }
+
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
