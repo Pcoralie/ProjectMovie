@@ -131,7 +131,7 @@ public class DetailActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     //@Override
                     public void onClick(View v) {
-                        
+
                             saveToWatch();
                     }
                 }
